@@ -1,6 +1,7 @@
 # pnplbC — Angular + LoopBack client for pnplb
 
 [![Build Status](https://travis-ci.org/HartasCuerdas/pnplbC.svg?branch=master)](https://travis-ci.org/HartasCuerdas/pnplbC)
+[![Code Climate](https://codeclimate.com/repos/5417d946e30ba0433500978e/badges/a68889f4339ae1e1c1cb/gpa.svg)](https://codeclimate.com/repos/5417d946e30ba0433500978e/feed)
 
 This project is a client for [pnplb](https://github.com/HartasCuerdas/pnplb).
 
