@@ -1,8 +1,8 @@
 {
-  "name": "angular-seed",
-  "description": "A starter project for AngularJS",
+  "name": "pnplbC",
+  "description": "Angular + LoopBack client for pnplb",
   "version": "0.0.0",
-  "homepage": "https://github.com/angular/angular-seed",
+  "homepage": "https://github.com/HartasCuerdas/pnplbC",
   "license": "MIT",
   "private": true,
   "dependencies": {
