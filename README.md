@@ -4,6 +4,7 @@
 [![Code Climate](https://codeclimate.com/repos/5417d946e30ba0433500978e/badges/a68889f4339ae1e1c1cb/gpa.svg)](https://codeclimate.com/repos/5417d946e30ba0433500978e/feed)
 [![Codeship Status for HartasCuerdas/pnplbC](https://www.codeship.io/projects/6d7d7ad0-1f9c-0132-16fc-7e0cc80f5c25/status)](https://www.codeship.io/projects/35747)
 [![devDependency Status](https://david-dm.org/HartasCuerdas/pnplbC/dev-status.svg)](https://david-dm.org/HartasCuerdas/pnplbC#info=devDependencies)
+[![Dependency Status](https://gemnasium.com/reachlocal/boxci.svg)](https://gemnasium.com/reachlocal/boxci)
 
 This project is a client for [pnplb](https://github.com/HartasCuerdas/pnplb).
 
