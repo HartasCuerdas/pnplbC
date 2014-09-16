@@ -1,5 +1,7 @@
 # pnplbC — Angular + LoopBack client for pnplb
 
+[![Build Status](https://travis-ci.org/HartasCuerdas/pnplbC.svg?branch=master)](https://travis-ci.org/HartasCuerdas/pnplbC)
+
 This project is a client for [pnplb](https://github.com/HartasCuerdas/pnplb).
 
 The base for this project is [AngularJS Seed](https://github.com/angular/angular-seed)
