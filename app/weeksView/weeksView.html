@@ -1,15 +1,15 @@
 <table class="table ngp-table">
   <thead>
     <th>firstDay</th>
-    <th>oAVG</th>
-    <th>dAVG</th>
+    <th>oAvg</th>
+    <th>dAvg</th>
     <th></th>
   </thead>
   <tbody>
     <tr ng-repeat="week in weeks">
-      <td><a class="btn btn-default" href="{{week.id}}">{{ week.firstDay }}</a></td>
-      <td>{{ week.oAVG | number: 1 }}</td>
-      <td>{{ week.dAVG | number: 1 }}</td>
+      <td><a class="btn btn-default" href="{{week.id}}">{{ week.firstDay | date: 'MMM, EEE dd' }}</a></td>
+      <td>{{ week.oAvg | number: 1 }}</td>
+      <td>{{ week.dAvg | number: 1 }}</td>
       <td><a href="#">Destroy</a></td>
     </tr>
   </tbody>
