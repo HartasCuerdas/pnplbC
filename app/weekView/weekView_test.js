@@ -8,8 +8,8 @@ describe('myApp.weekView module', function() {
 
     it('should ....', inject(function($controller) {
       //spec body
-      var view2Ctrl = $controller('WeekCtrl');
-      expect(view2Ctrl).toBeDefined();
+      var weekCtrl = $controller('WeekCtrl');
+      expect(weekCtrl).toBeDefined();
     }));
 
   });

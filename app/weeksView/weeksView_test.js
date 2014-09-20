@@ -9,8 +9,8 @@ describe('myApp.weeksView module', function() {
     it('should ....', inject(function($controller) {
       //spec body
       var scope = {};
-      var view1Ctrl = $controller('WeeksCtrl', {$scope:scope});
-      expect(view1Ctrl).toBeDefined();
+      var weeksCtrl = $controller('WeeksCtrl', {$scope:scope});
+      expect(weeksCtrl).toBeDefined();
     }));
 
   });
