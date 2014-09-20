@@ -11,4 +11,5 @@ angular.module('myApp.dayView', ['ngRoute', 'pnpServices'])
 
 .controller('DayCtrl', [ '$routeParams', '$scope', 'Day', function($routeParams, $scope, Day) {
   $scope.day = Day.findById({id: $routeParams.id});
+  $scope.ods = Day.ods({id: $routeParams.id});
 }]);
