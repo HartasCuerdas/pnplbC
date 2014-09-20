@@ -5,6 +5,7 @@ angular.module('myApp', [
   'ngRoute',
   'myApp.weeksView',
   'myApp.weekView',
+  'myApp.dayView',
   'myApp.version'
 ]).
 config(config);
