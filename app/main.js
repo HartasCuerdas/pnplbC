@@ -7,6 +7,9 @@ angular.module('myApp', [
   'myApp.weekView',
   'myApp.version'
 ]).
-config(['$routeProvider', function($routeProvider) {
+config(config);
+
+function config ($locationProvider, $routeProvider, $httpProvider) {
+  $locationProvider.html5Mode(true);
   $routeProvider.otherwise({redirectTo: '/weeks'});
-}]);
+};
