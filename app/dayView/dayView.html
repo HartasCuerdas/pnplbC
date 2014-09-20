@@ -3,3 +3,18 @@
 <div>
   oTotal: <span id="ngp-oTotal">{{ day.oTotal }}</span>, dTotal: <span id="ngp-dTotal">{{ day.dTotal }}</span> | <span>well_registered: {{ day.wr }}</span>
 </div>
+
+<table class="table ngp-table">
+  <thead>
+    <th>Timekey</th>
+    <th>o</th>
+    <th>d</th>
+  </thead>
+  <tbody>
+    <tr ng-repeat="od in ods">
+      <td>{{ od.timekey }}</td>
+      <td>{{ od.o }}</td>
+      <td>{{ od.d }}</td>
+    </tr>
+  </tbody>
+</table>
