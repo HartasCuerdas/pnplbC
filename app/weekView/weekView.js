@@ -9,8 +9,7 @@ angular.module('myApp.weekView', ['ngRoute', 'pnpServices'])
   });
 }])
 
-.controller('WeekCtrl', [ '$routeParams', '$scope', 'Week', 'Day', function($routeParams, $scope, Week, Day) {
+.controller('WeekCtrl', [ '$routeParams', '$scope', 'Week', function($routeParams, $scope, Week) {
   $scope.week = Week.findById({id: $routeParams.id});
   $scope.days = Week.days({id: $routeParams.id});
-
 }]);
