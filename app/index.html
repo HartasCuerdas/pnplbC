@@ -9,10 +9,13 @@
   <title>PnP</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css">
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css">
-  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
-  <link rel="stylesheet" href="app.css"/>
+  <!-- build:css /css/style.min.css -->
+  <!-- bower:css -->
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+  <!-- endbower -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/stylesheets/main.css">
+  <!-- endinject -->
   <script src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
 </head>
 <body class="ngp-body">
@@ -31,17 +34,28 @@
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
   -->
+  <!-- build:js /js/vendor.min.js -->
+  <!-- bower:js -->
+  <script src="bower_components/jquery/jquery.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-loader/angular-loader.js"></script>
   <script src="bower_components/angular-resource/angular-resource.js"></script>
-  <script src="bower_components/jquery/jquery.js"></script>
+  <script src="bower_components/angular-mocks/angular-mocks.js"></script>
   <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-  <script src="pnp-services.js"></script>
-  <script src="app.js"></script>
-  <script src="weeksView/weeksView.js"></script>
-  <script src="weekView/weekView.js"></script>
-  <script src="components/version/version.js"></script>
-  <script src="components/version/version-directive.js"></script>
-  <script src="components/version/interpolate-filter.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
+  <!-- build:js /js/app.min.js -->
+  <!-- inject:js -->
+  <script src="/weeksView/weeksView.js"></script>
+  <script src="/weekView/weekView.js"></script>
+  <script src="/components/version/version.js"></script>
+  <script src="/components/version/version-directive.js"></script>
+  <script src="/components/version/interpolate-filter.js"></script>
+  <script src="/pnp-services.js"></script>
+  <script src="/main.js"></script>
+  <script src="/aux-services.js"></script>
+  <!-- endinject -->
+  <!-- endbuild -->
 </body>
 </html>
