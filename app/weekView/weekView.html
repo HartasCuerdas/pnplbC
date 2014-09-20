@@ -1,4 +1,49 @@
-<p>This is the partial for weekView.</p>
+<a href="/" class="btn btn-primary">Back</a>
 
-<div>Week: <span>{{week}}</span></div>
-<div>Week's Days: <span>{{days}}</span></div>
+<div>
+  <span>id: {{ week.id }}</span> | <span>firstDay: {{ week.firstDay | date: 'MMM, EEE dd' }}</span>
+</div>
+
+<table id="ngp-stats-table" class="table ngp-table">
+  <thead>
+    <tr>
+      <th>Stats</th>
+      <th>O</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AVG</td>
+      <td id="pnpC-oAVG">{{ week.oAVG | number: 1 }}</td>
+      <td id="pnpC-dAVG">{{ week.dAVG | number: 1 }}</td>
+    </tr>
+    <tr>
+      <td>MAX</td>
+      <td id="pnpC-oMAX">{{ week.Max }}</td>
+      <td id="pnpC-dMAX">{{ week.dMax }}</td>
+    </tr>
+    <tr>
+      <td>MIN</td>
+      <td id="pnpC-oMIN">{{ week.oMin }}</td>
+      <td id="pnpC-dMIN">{{ week.dMin }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="table ngp-table">
+  <thead>
+    <th>Day</th>
+    <th>oTotal</th>
+    <th>dTotal</th>
+    <th>well registered</th>
+  </thead>
+  <tbody>
+    <tr ng-repeat="day in days">
+      <td><a class="btn btn-default" href="day/{{day.id}}">{{ day.date | date: 'MMM, EEE dd' }}</a></td>
+      <td>{{ day.oTotal }}</td>
+      <td>{{ day.dTotal }}</td>
+      <td><span class="btn ngp-day-wr-btn {{ (day.wr) ? 'btn-success' : 'btn-danger' }}" ng-click="togglewr(day.id)">{{ (day.wr) ? 'Well' : 'Poor' }}</span></td>
+    </tr>
+  </tbody>
+</table>
