@@ -3,7 +3,7 @@
 angular.module('myApp.weekView', ['ngRoute', 'pnpServices'])
 
 .config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/weekView', {
+  $routeProvider.when('/:id', {
     templateUrl: 'weekView/weekView.html',
     controller: 'WeekCtrl'
   });
