@@ -4,38 +4,38 @@
 
 describe('my app', function() {
 
-  browser.get('index.html');
+  browser.get('/');
 
-  it('should automatically redirect to /view1 when location hash/fragment is empty', function() {
-    expect(browser.getLocationAbsUrl()).toMatch("/view1");
+  it('should automatically redirect to /weeks when location hash/fragment is empty', function() {
+    expect(browser.getLocationAbsUrl()).toMatch("/weeks");
   });
 
 
-  describe('view1', function() {
+  describe('weeks', function() {
 
     beforeEach(function() {
-      browser.get('index.html#/view1');
+      browser.get('/weeks');
     });
 
 
-    it('should render view1 when user navigates to /view1', function() {
-      expect(element.all(by.css('[ng-view] p')).first().getText()).
-        toMatch(/partial for view 1/);
+    it('should render weeks when user navigates to /weeks', function() {
+      expect(element.all(by.css('[ng-view] h1')).first().getText()).
+        toMatch(/Weeks/);
     });
 
   });
 
 
-  describe('view2', function() {
+  describe('week', function() {
 
     beforeEach(function() {
-      browser.get('index.html#/view2');
+      browser.get('/541e4f15e407841c33bb8f18');
     });
 
 
-    it('should render view2 when user navigates to /view2', function() {
-      expect(element.all(by.css('[ng-view] p')).first().getText()).
-        toMatch(/partial for view 2/);
+    it('should render week when user navigates to /541e4f15e407841c33bb8f18', function() {
+      expect(element.all(by.css('[ng-view] h1')).first().getText()).
+        toMatch(/Week/);
     });
 
   });
