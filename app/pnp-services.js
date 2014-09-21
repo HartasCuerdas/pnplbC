@@ -50,6 +50,11 @@ module.factory(
          * @param {Object=} parameters Request parameters.
          *
          *  - `include` – `{string=}` - Related objects to include in the response. See the description of return value for more details.
+         *   Default value: `user`.
+         *
+         *  - `rememberMe` - `boolean` - Whether the authentication credentials
+         *     should be remembered in localStorage across app/browser restarts.
+         *     Default: `true`.
          *
          * @param {Object} postData Request data.
          *
@@ -75,6 +80,18 @@ module.factory(
         "login": {
           url: urlBase + "/Users/login",
           method: "POST",
+          params: {
+            include: "user"
+          },
+          interceptor: {
+            response: function(response) {
+              var accessToken = response.data;
+              LoopBackAuth.setUser(accessToken.id, accessToken.userId, accessToken.user);
+              LoopBackAuth.rememberMe = response.config.params.rememberMe !== false;
+              LoopBackAuth.save();
+              return response.resource;
+            }
+          }
         },
 
         /**
@@ -110,6 +127,13 @@ module.factory(
         "logout": {
           url: urlBase + "/Users/logout",
           method: "POST",
+          interceptor: {
+            response: function(response) {
+              LoopBackAuth.clearUser();
+              LoopBackAuth.save();
+              return response.resource;
+            }
+          }
         },
 
         /**
@@ -766,6 +790,45 @@ module.factory(
           url: urlBase + "/Users/:id",
           method: "PUT",
         },
+
+        /**
+         * @ngdoc method
+         * @name pnpServices.User#getCurrent
+         * @methodOf pnpServices.User
+         *
+         * @description
+         *
+         * Get data of the currently logged user. Fail with HTTP result 401
+         * when there is no user logged in.
+         *
+         * @param {Function(Object, Object)=} successCb
+         *    Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {Function(Object)=} errorCb Error callback with one argument:
+         *    `httpResponse`.
+         *
+         * @return {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         */
+        "getCurrent": {
+           url: urlBase + "/" + "/Users" + "/:id",
+           method: "GET",
+           params: {
+             id: function() {
+              var id = LoopBackAuth.currentUserId;
+              if (id == null) id = '__anonymous__';
+              return id;
+            },
+          },
+          interceptor: {
+            response: function(response) {
+              LoopBackAuth.currentUserData = response.data;
+              return response.resource;
+            }
+          },
+          __isGetCurrentUser__ : true
+        }
       }
     );
 
@@ -891,6 +954,47 @@ module.factory(
          */
         R["removeById"] = R["deleteById"];
 
+        /**
+         * @ngdoc method
+         * @name pnpServices.User#getCachedCurrent
+         * @methodOf pnpServices.User
+         *
+         * @description
+         *
+         * Get data of the currently logged user that was returned by the last
+         * call to {@link pnpServices.User#login} or
+         * {@link pnpServices.User#getCurrent}. Return null when there
+         * is no user logged in or the data of the current user were not fetched
+         * yet.
+         *
+         * @return {Object} A User instance.
+         */
+        R.getCachedCurrent = function() {
+          var data = LoopBackAuth.currentUserData;
+          return data ? new R(data) : null;
+        };
+
+        /**
+         * @ngdoc method
+         * @name pnpServices.User#isAuthenticated
+         * @methodOf pnpServices.User
+         *
+         * @return {boolean} True if the current user is authenticated (logged in).
+         */
+        R.isAuthenticated = function() {
+          return this.getCurrentId() != null;
+        };
+
+        /**
+         * @ngdoc method
+         * @name pnpServices.User#getCurrentId
+         * @methodOf pnpServices.User
+         *
+         * @return {Object} Id of the currently logged-in user or null.
+         */
+        R.getCurrentId = function() {
+          return LoopBackAuth.currentUserId;
+        };
 
 
     return R;
@@ -920,46 +1024,46 @@ module.factory(
       { 'id': '@id' },
       {
 
-        // INTERNAL. Use Week.Days.findById() instead.
-        "prototype$__findById__Days": {
-          url: urlBase + "/Weeks/:id/Days/:fk",
+        // INTERNAL. Use Week.days.findById() instead.
+        "prototype$__findById__days": {
+          url: urlBase + "/Weeks/:id/days/:fk",
           method: "GET",
         },
 
-        // INTERNAL. Use Week.Days.destroyById() instead.
-        "prototype$__destroyById__Days": {
-          url: urlBase + "/Weeks/:id/Days/:fk",
+        // INTERNAL. Use Week.days.destroyById() instead.
+        "prototype$__destroyById__days": {
+          url: urlBase + "/Weeks/:id/days/:fk",
           method: "DELETE",
         },
 
-        // INTERNAL. Use Week.Days.updateById() instead.
-        "prototype$__updateById__Days": {
-          url: urlBase + "/Weeks/:id/Days/:fk",
+        // INTERNAL. Use Week.days.updateById() instead.
+        "prototype$__updateById__days": {
+          url: urlBase + "/Weeks/:id/days/:fk",
           method: "PUT",
         },
 
-        // INTERNAL. Use Week.Days() instead.
-        "prototype$__get__Days": {
-          url: urlBase + "/Weeks/:id/Days",
+        // INTERNAL. Use Week.days() instead.
+        "prototype$__get__days": {
+          url: urlBase + "/Weeks/:id/days",
           method: "GET",
           isArray: true,
         },
 
-        // INTERNAL. Use Week.Days.create() instead.
-        "prototype$__create__Days": {
-          url: urlBase + "/Weeks/:id/Days",
+        // INTERNAL. Use Week.days.create() instead.
+        "prototype$__create__days": {
+          url: urlBase + "/Weeks/:id/days",
           method: "POST",
         },
 
-        // INTERNAL. Use Week.Days.destroyAll() instead.
-        "prototype$__delete__Days": {
-          url: urlBase + "/Weeks/:id/Days",
+        // INTERNAL. Use Week.days.destroyAll() instead.
+        "prototype$__delete__days": {
+          url: urlBase + "/Weeks/:id/days",
           method: "DELETE",
         },
 
-        // INTERNAL. Use Week.Days.count() instead.
-        "prototype$__count__Days": {
-          url: urlBase + "/Weeks/:id/Days/count",
+        // INTERNAL. Use Week.days.count() instead.
+        "prototype$__count__days": {
+          url: urlBase + "/Weeks/:id/days/count",
           method: "GET",
         },
 
@@ -1304,9 +1408,9 @@ module.factory(
           method: "PUT",
         },
 
-        // INTERNAL. Use Day.weekId() instead.
-        "::get::Day::weekId": {
-          url: urlBase + "/Days/:id/weekId",
+        // INTERNAL. Use Day.week() instead.
+        "::get::Day::week": {
+          url: urlBase + "/Days/:id/week",
           method: "GET",
         },
       }
@@ -1437,26 +1541,26 @@ module.factory(
 
     /**
      * @ngdoc object
-     * @name pnpServices.Week.Days
+     * @name pnpServices.Week.days
      * @object
      * @description
      *
-     * The object `Week.Days` groups methods
+     * The object `Week.days` groups methods
      * manipulating `Day` instances related to `Week`.
      *
-     * Use {@link pnpServices.Week#Days} to query
+     * Use {@link pnpServices.Week#days} to query
      * all related instances.
      */
 
 
         /**
          * @ngdoc method
-         * @name pnpServices.Week#Days
+         * @name pnpServices.Week#days
          * @methodOf pnpServices.Week
          *
          * @description
          *
-         * Queries Days of Week.
+         * Queries days of Week.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -1479,20 +1583,20 @@ module.factory(
          * This usually means the response is a `Day` object.)
          * </em>
          */
-        R.Days = function() {
+        R.days = function() {
           var TargetResource = $injector.get("Day");
-          var action = TargetResource["::get::Week::Days"];
+          var action = TargetResource["::get::Week::days"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name pnpServices.Week.Days#count
-         * @methodOf pnpServices.Week.Days
+         * @name pnpServices.Week.days#count
+         * @methodOf pnpServices.Week.days
          *
          * @description
          *
-         * Counts Days of Week.
+         * Counts days of Week.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -1514,20 +1618,20 @@ module.factory(
          *
          *  - `count` – `{number=}` - 
          */
-        R.Days.count = function() {
+        R.days.count = function() {
           var TargetResource = $injector.get("Day");
-          var action = TargetResource["::count::Week::Days"];
+          var action = TargetResource["::count::Week::days"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name pnpServices.Week.Days#create
-         * @methodOf pnpServices.Week.Days
+         * @name pnpServices.Week.days#create
+         * @methodOf pnpServices.Week.days
          *
          * @description
          *
-         * Creates a new instance in Days of this model.
+         * Creates a new instance in days of this model.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -1552,20 +1656,20 @@ module.factory(
          * This usually means the response is a `Day` object.)
          * </em>
          */
-        R.Days.create = function() {
+        R.days.create = function() {
           var TargetResource = $injector.get("Day");
-          var action = TargetResource["::create::Week::Days"];
+          var action = TargetResource["::create::Week::days"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name pnpServices.Week.Days#destroyAll
-         * @methodOf pnpServices.Week.Days
+         * @name pnpServices.Week.days#destroyAll
+         * @methodOf pnpServices.Week.days
          *
          * @description
          *
-         * Deletes all Days of this model.
+         * Deletes all days of this model.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -1583,26 +1687,26 @@ module.factory(
          *
          * This method returns no data.
          */
-        R.Days.destroyAll = function() {
+        R.days.destroyAll = function() {
           var TargetResource = $injector.get("Day");
-          var action = TargetResource["::delete::Week::Days"];
+          var action = TargetResource["::delete::Week::days"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name pnpServices.Week.Days#destroyById
-         * @methodOf pnpServices.Week.Days
+         * @name pnpServices.Week.days#destroyById
+         * @methodOf pnpServices.Week.days
          *
          * @description
          *
-         * Delete a related item by id for Days
+         * Delete a related item by id for days
          *
          * @param {Object=} parameters Request parameters.
          *
          *  - `id` – `{*}` - PersistedModel id
          *
-         *  - `fk` – `{*}` - Foreign key for Days
+         *  - `fk` – `{*}` - Foreign key for days
          *
          * @param {Function(Object, Object)=} successCb
          *   Success callback with two arguments: `value`, `responseHeaders`.
@@ -1618,26 +1722,26 @@ module.factory(
          *
          *  - `` – `{undefined=}` - 
          */
-        R.Days.destroyById = function() {
+        R.days.destroyById = function() {
           var TargetResource = $injector.get("Day");
-          var action = TargetResource["::destroyById::Week::Days"];
+          var action = TargetResource["::destroyById::Week::days"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name pnpServices.Week.Days#findById
-         * @methodOf pnpServices.Week.Days
+         * @name pnpServices.Week.days#findById
+         * @methodOf pnpServices.Week.days
          *
          * @description
          *
-         * Find a related item by id for Days
+         * Find a related item by id for days
          *
          * @param {Object=} parameters Request parameters.
          *
          *  - `id` – `{*}` - PersistedModel id
          *
-         *  - `fk` – `{*}` - Foreign key for Days
+         *  - `fk` – `{*}` - Foreign key for days
          *
          * @param {Function(Object, Object)=} successCb
          *   Success callback with two arguments: `value`, `responseHeaders`.
@@ -1654,26 +1758,26 @@ module.factory(
          * This usually means the response is a `Day` object.)
          * </em>
          */
-        R.Days.findById = function() {
+        R.days.findById = function() {
           var TargetResource = $injector.get("Day");
-          var action = TargetResource["::findById::Week::Days"];
+          var action = TargetResource["::findById::Week::days"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name pnpServices.Week.Days#updateById
-         * @methodOf pnpServices.Week.Days
+         * @name pnpServices.Week.days#updateById
+         * @methodOf pnpServices.Week.days
          *
          * @description
          *
-         * Update a related item by id for Days
+         * Update a related item by id for days
          *
          * @param {Object=} parameters Request parameters.
          *
          *  - `id` – `{*}` - PersistedModel id
          *
-         *  - `fk` – `{*}` - Foreign key for Days
+         *  - `fk` – `{*}` - Foreign key for days
          *
          * @param {Object} postData Request data.
          *
@@ -1694,9 +1798,9 @@ module.factory(
          * This usually means the response is a `Day` object.)
          * </em>
          */
-        R.Days.updateById = function() {
+        R.days.updateById = function() {
           var TargetResource = $injector.get("Day");
-          var action = TargetResource["::updateById::Week::Days"];
+          var action = TargetResource["::updateById::Week::days"];
           return action.apply(R, arguments);
         };
 
@@ -1727,52 +1831,52 @@ module.factory(
       { 'id': '@id' },
       {
 
-        // INTERNAL. Use Day.weekId() instead.
-        "prototype$__get__weekId": {
-          url: urlBase + "/Days/:id/weekId",
+        // INTERNAL. Use Day.week() instead.
+        "prototype$__get__week": {
+          url: urlBase + "/Days/:id/week",
           method: "GET",
         },
 
-        // INTERNAL. Use Day.ODs.findById() instead.
-        "prototype$__findById__ODs": {
-          url: urlBase + "/Days/:id/ODs/:fk",
+        // INTERNAL. Use Day.ods.findById() instead.
+        "prototype$__findById__ods": {
+          url: urlBase + "/Days/:id/ods/:fk",
           method: "GET",
         },
 
-        // INTERNAL. Use Day.ODs.destroyById() instead.
-        "prototype$__destroyById__ODs": {
-          url: urlBase + "/Days/:id/ODs/:fk",
+        // INTERNAL. Use Day.ods.destroyById() instead.
+        "prototype$__destroyById__ods": {
+          url: urlBase + "/Days/:id/ods/:fk",
           method: "DELETE",
         },
 
-        // INTERNAL. Use Day.ODs.updateById() instead.
-        "prototype$__updateById__ODs": {
-          url: urlBase + "/Days/:id/ODs/:fk",
+        // INTERNAL. Use Day.ods.updateById() instead.
+        "prototype$__updateById__ods": {
+          url: urlBase + "/Days/:id/ods/:fk",
           method: "PUT",
         },
 
-        // INTERNAL. Use Day.ODs() instead.
-        "prototype$__get__ODs": {
-          url: urlBase + "/Days/:id/ODs",
+        // INTERNAL. Use Day.ods() instead.
+        "prototype$__get__ods": {
+          url: urlBase + "/Days/:id/ods",
           method: "GET",
           isArray: true,
         },
 
-        // INTERNAL. Use Day.ODs.create() instead.
-        "prototype$__create__ODs": {
-          url: urlBase + "/Days/:id/ODs",
+        // INTERNAL. Use Day.ods.create() instead.
+        "prototype$__create__ods": {
+          url: urlBase + "/Days/:id/ods",
           method: "POST",
         },
 
-        // INTERNAL. Use Day.ODs.destroyAll() instead.
-        "prototype$__delete__ODs": {
-          url: urlBase + "/Days/:id/ODs",
+        // INTERNAL. Use Day.ods.destroyAll() instead.
+        "prototype$__delete__ods": {
+          url: urlBase + "/Days/:id/ods",
           method: "DELETE",
         },
 
-        // INTERNAL. Use Day.ODs.count() instead.
-        "prototype$__count__ODs": {
-          url: urlBase + "/Days/:id/ODs/count",
+        // INTERNAL. Use Day.ods.count() instead.
+        "prototype$__count__ods": {
+          url: urlBase + "/Days/:id/ods/count",
           method: "GET",
         },
 
@@ -2117,52 +2221,52 @@ module.factory(
           method: "PUT",
         },
 
-        // INTERNAL. Use Week.Days.findById() instead.
-        "::findById::Week::Days": {
-          url: urlBase + "/Weeks/:id/Days/:fk",
+        // INTERNAL. Use Week.days.findById() instead.
+        "::findById::Week::days": {
+          url: urlBase + "/Weeks/:id/days/:fk",
           method: "GET",
         },
 
-        // INTERNAL. Use Week.Days.destroyById() instead.
-        "::destroyById::Week::Days": {
-          url: urlBase + "/Weeks/:id/Days/:fk",
+        // INTERNAL. Use Week.days.destroyById() instead.
+        "::destroyById::Week::days": {
+          url: urlBase + "/Weeks/:id/days/:fk",
           method: "DELETE",
         },
 
-        // INTERNAL. Use Week.Days.updateById() instead.
-        "::updateById::Week::Days": {
-          url: urlBase + "/Weeks/:id/Days/:fk",
+        // INTERNAL. Use Week.days.updateById() instead.
+        "::updateById::Week::days": {
+          url: urlBase + "/Weeks/:id/days/:fk",
           method: "PUT",
         },
 
-        // INTERNAL. Use Week.Days() instead.
-        "::get::Week::Days": {
-          url: urlBase + "/Weeks/:id/Days",
+        // INTERNAL. Use Week.days() instead.
+        "::get::Week::days": {
+          url: urlBase + "/Weeks/:id/days",
           method: "GET",
           isArray: true,
         },
 
-        // INTERNAL. Use Week.Days.create() instead.
-        "::create::Week::Days": {
-          url: urlBase + "/Weeks/:id/Days",
+        // INTERNAL. Use Week.days.create() instead.
+        "::create::Week::days": {
+          url: urlBase + "/Weeks/:id/days",
           method: "POST",
         },
 
-        // INTERNAL. Use Week.Days.destroyAll() instead.
-        "::delete::Week::Days": {
-          url: urlBase + "/Weeks/:id/Days",
+        // INTERNAL. Use Week.days.destroyAll() instead.
+        "::delete::Week::days": {
+          url: urlBase + "/Weeks/:id/days",
           method: "DELETE",
         },
 
-        // INTERNAL. Use Week.Days.count() instead.
-        "::count::Week::Days": {
-          url: urlBase + "/Weeks/:id/Days/count",
+        // INTERNAL. Use Week.days.count() instead.
+        "::count::Week::days": {
+          url: urlBase + "/Weeks/:id/days/count",
           method: "GET",
         },
 
-        // INTERNAL. Use OD.dayId() instead.
-        "::get::OD::dayId": {
-          url: urlBase + "/ODs/:id/dayId",
+        // INTERNAL. Use OD.day() instead.
+        "::get::OD::day": {
+          url: urlBase + "/ODs/:id/day",
           method: "GET",
         },
       }
@@ -2294,12 +2398,12 @@ module.factory(
 
         /**
          * @ngdoc method
-         * @name pnpServices.Day#weekId
+         * @name pnpServices.Day#week
          * @methodOf pnpServices.Day
          *
          * @description
          *
-         * Fetches belongsTo relation weekId
+         * Fetches belongsTo relation week
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -2322,33 +2426,33 @@ module.factory(
          * This usually means the response is a `Week` object.)
          * </em>
          */
-        R.weekId = function() {
+        R.week = function() {
           var TargetResource = $injector.get("Week");
-          var action = TargetResource["::get::Day::weekId"];
+          var action = TargetResource["::get::Day::week"];
           return action.apply(R, arguments);
         };
     /**
      * @ngdoc object
-     * @name pnpServices.Day.ODs
+     * @name pnpServices.Day.ods
      * @object
      * @description
      *
-     * The object `Day.ODs` groups methods
+     * The object `Day.ods` groups methods
      * manipulating `OD` instances related to `Day`.
      *
-     * Use {@link pnpServices.Day#ODs} to query
+     * Use {@link pnpServices.Day#ods} to query
      * all related instances.
      */
 
 
         /**
          * @ngdoc method
-         * @name pnpServices.Day#ODs
+         * @name pnpServices.Day#ods
          * @methodOf pnpServices.Day
          *
          * @description
          *
-         * Queries ODs of Day.
+         * Queries ods of Day.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -2371,20 +2475,20 @@ module.factory(
          * This usually means the response is a `OD` object.)
          * </em>
          */
-        R.ODs = function() {
+        R.ods = function() {
           var TargetResource = $injector.get("OD");
-          var action = TargetResource["::get::Day::ODs"];
+          var action = TargetResource["::get::Day::ods"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name pnpServices.Day.ODs#count
-         * @methodOf pnpServices.Day.ODs
+         * @name pnpServices.Day.ods#count
+         * @methodOf pnpServices.Day.ods
          *
          * @description
          *
-         * Counts ODs of Day.
+         * Counts ods of Day.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -2406,20 +2510,20 @@ module.factory(
          *
          *  - `count` – `{number=}` - 
          */
-        R.ODs.count = function() {
+        R.ods.count = function() {
           var TargetResource = $injector.get("OD");
-          var action = TargetResource["::count::Day::ODs"];
+          var action = TargetResource["::count::Day::ods"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name pnpServices.Day.ODs#create
-         * @methodOf pnpServices.Day.ODs
+         * @name pnpServices.Day.ods#create
+         * @methodOf pnpServices.Day.ods
          *
          * @description
          *
-         * Creates a new instance in ODs of this model.
+         * Creates a new instance in ods of this model.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -2444,20 +2548,20 @@ module.factory(
          * This usually means the response is a `OD` object.)
          * </em>
          */
-        R.ODs.create = function() {
+        R.ods.create = function() {
           var TargetResource = $injector.get("OD");
-          var action = TargetResource["::create::Day::ODs"];
+          var action = TargetResource["::create::Day::ods"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name pnpServices.Day.ODs#destroyAll
-         * @methodOf pnpServices.Day.ODs
+         * @name pnpServices.Day.ods#destroyAll
+         * @methodOf pnpServices.Day.ods
          *
          * @description
          *
-         * Deletes all ODs of this model.
+         * Deletes all ods of this model.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -2475,26 +2579,26 @@ module.factory(
          *
          * This method returns no data.
          */
-        R.ODs.destroyAll = function() {
+        R.ods.destroyAll = function() {
           var TargetResource = $injector.get("OD");
-          var action = TargetResource["::delete::Day::ODs"];
+          var action = TargetResource["::delete::Day::ods"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name pnpServices.Day.ODs#destroyById
-         * @methodOf pnpServices.Day.ODs
+         * @name pnpServices.Day.ods#destroyById
+         * @methodOf pnpServices.Day.ods
          *
          * @description
          *
-         * Delete a related item by id for ODs
+         * Delete a related item by id for ods
          *
          * @param {Object=} parameters Request parameters.
          *
          *  - `id` – `{*}` - PersistedModel id
          *
-         *  - `fk` – `{*}` - Foreign key for ODs
+         *  - `fk` – `{*}` - Foreign key for ods
          *
          * @param {Function(Object, Object)=} successCb
          *   Success callback with two arguments: `value`, `responseHeaders`.
@@ -2510,26 +2614,26 @@ module.factory(
          *
          *  - `` – `{undefined=}` - 
          */
-        R.ODs.destroyById = function() {
+        R.ods.destroyById = function() {
           var TargetResource = $injector.get("OD");
-          var action = TargetResource["::destroyById::Day::ODs"];
+          var action = TargetResource["::destroyById::Day::ods"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name pnpServices.Day.ODs#findById
-         * @methodOf pnpServices.Day.ODs
+         * @name pnpServices.Day.ods#findById
+         * @methodOf pnpServices.Day.ods
          *
          * @description
          *
-         * Find a related item by id for ODs
+         * Find a related item by id for ods
          *
          * @param {Object=} parameters Request parameters.
          *
          *  - `id` – `{*}` - PersistedModel id
          *
-         *  - `fk` – `{*}` - Foreign key for ODs
+         *  - `fk` – `{*}` - Foreign key for ods
          *
          * @param {Function(Object, Object)=} successCb
          *   Success callback with two arguments: `value`, `responseHeaders`.
@@ -2546,26 +2650,26 @@ module.factory(
          * This usually means the response is a `OD` object.)
          * </em>
          */
-        R.ODs.findById = function() {
+        R.ods.findById = function() {
           var TargetResource = $injector.get("OD");
-          var action = TargetResource["::findById::Day::ODs"];
+          var action = TargetResource["::findById::Day::ods"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name pnpServices.Day.ODs#updateById
-         * @methodOf pnpServices.Day.ODs
+         * @name pnpServices.Day.ods#updateById
+         * @methodOf pnpServices.Day.ods
          *
          * @description
          *
-         * Update a related item by id for ODs
+         * Update a related item by id for ods
          *
          * @param {Object=} parameters Request parameters.
          *
          *  - `id` – `{*}` - PersistedModel id
          *
-         *  - `fk` – `{*}` - Foreign key for ODs
+         *  - `fk` – `{*}` - Foreign key for ods
          *
          * @param {Object} postData Request data.
          *
@@ -2586,9 +2690,9 @@ module.factory(
          * This usually means the response is a `OD` object.)
          * </em>
          */
-        R.ODs.updateById = function() {
+        R.ods.updateById = function() {
           var TargetResource = $injector.get("OD");
-          var action = TargetResource["::updateById::Day::ODs"];
+          var action = TargetResource["::updateById::Day::ods"];
           return action.apply(R, arguments);
         };
 
@@ -2619,9 +2723,9 @@ module.factory(
       { 'id': '@id' },
       {
 
-        // INTERNAL. Use OD.dayId() instead.
-        "prototype$__get__dayId": {
-          url: urlBase + "/ODs/:id/dayId",
+        // INTERNAL. Use OD.day() instead.
+        "prototype$__get__day": {
+          url: urlBase + "/ODs/:id/day",
           method: "GET",
         },
 
@@ -2966,46 +3070,46 @@ module.factory(
           method: "PUT",
         },
 
-        // INTERNAL. Use Day.ODs.findById() instead.
-        "::findById::Day::ODs": {
-          url: urlBase + "/Days/:id/ODs/:fk",
+        // INTERNAL. Use Day.ods.findById() instead.
+        "::findById::Day::ods": {
+          url: urlBase + "/Days/:id/ods/:fk",
           method: "GET",
         },
 
-        // INTERNAL. Use Day.ODs.destroyById() instead.
-        "::destroyById::Day::ODs": {
-          url: urlBase + "/Days/:id/ODs/:fk",
+        // INTERNAL. Use Day.ods.destroyById() instead.
+        "::destroyById::Day::ods": {
+          url: urlBase + "/Days/:id/ods/:fk",
           method: "DELETE",
         },
 
-        // INTERNAL. Use Day.ODs.updateById() instead.
-        "::updateById::Day::ODs": {
-          url: urlBase + "/Days/:id/ODs/:fk",
+        // INTERNAL. Use Day.ods.updateById() instead.
+        "::updateById::Day::ods": {
+          url: urlBase + "/Days/:id/ods/:fk",
           method: "PUT",
         },
 
-        // INTERNAL. Use Day.ODs() instead.
-        "::get::Day::ODs": {
-          url: urlBase + "/Days/:id/ODs",
+        // INTERNAL. Use Day.ods() instead.
+        "::get::Day::ods": {
+          url: urlBase + "/Days/:id/ods",
           method: "GET",
           isArray: true,
         },
 
-        // INTERNAL. Use Day.ODs.create() instead.
-        "::create::Day::ODs": {
-          url: urlBase + "/Days/:id/ODs",
+        // INTERNAL. Use Day.ods.create() instead.
+        "::create::Day::ods": {
+          url: urlBase + "/Days/:id/ods",
           method: "POST",
         },
 
-        // INTERNAL. Use Day.ODs.destroyAll() instead.
-        "::delete::Day::ODs": {
-          url: urlBase + "/Days/:id/ODs",
+        // INTERNAL. Use Day.ods.destroyAll() instead.
+        "::delete::Day::ods": {
+          url: urlBase + "/Days/:id/ods",
           method: "DELETE",
         },
 
-        // INTERNAL. Use Day.ODs.count() instead.
-        "::count::Day::ODs": {
-          url: urlBase + "/Days/:id/ODs/count",
+        // INTERNAL. Use Day.ods.count() instead.
+        "::count::Day::ods": {
+          url: urlBase + "/Days/:id/ods/count",
           method: "GET",
         },
       }
@@ -3137,12 +3241,12 @@ module.factory(
 
         /**
          * @ngdoc method
-         * @name pnpServices.OD#dayId
+         * @name pnpServices.OD#day
          * @methodOf pnpServices.OD
          *
          * @description
          *
-         * Fetches belongsTo relation dayId
+         * Fetches belongsTo relation day
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -3165,9 +3269,9 @@ module.factory(
          * This usually means the response is a `Day` object.)
          * </em>
          */
-        R.dayId = function() {
+        R.day = function() {
           var TargetResource = $injector.get("Day");
-          var action = TargetResource["::get::OD::dayId"];
+          var action = TargetResource["::get::OD::day"];
           return action.apply(R, arguments);
         };
 
