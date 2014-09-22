@@ -9,11 +9,13 @@
     "angular": "1.2.22",
     "angular-route": "1.2.22",
     "angular-loader": "1.2.22",
-    "angular-resource": "1.2.22",
+    "angular-resource": "1.2.25",
     "angular-mocks": "1.2.22",
-    "html5-boilerplate": "~4.3.0"
+    "html5-boilerplate": "~4.3.0",
+    "bootstrap": "~3.2.0"
   },
   "resolutions": {
     "angular": "1.2.22"
-  }
+  },
+  "devDependencies": {}
 }
