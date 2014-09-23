@@ -17,7 +17,6 @@ angular.module('myApp.weeksView', ['ngRoute', 'pnpServices'])
     (Week.createNewWeek())
       .$promise
         .then(function(data) {
-          console.log('data: ' + data);
           $scope.weeks.push(data.week);
         })
         .catch(function(response) {
