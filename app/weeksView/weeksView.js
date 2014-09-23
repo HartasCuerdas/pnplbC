@@ -18,6 +18,7 @@ angular.module('myApp.weeksView', ['ngRoute', 'pnpServices'])
       .$promise
         .then(function(data) {
           console.log('data: ' + data);
+          $scope.weeks.push(data.week);
         })
         .catch(function(response) {
           console.log('response: ' + response);
