@@ -19,7 +19,7 @@ var gulp      = require('gulp'),
 gulp.task('server', function() {
   connect.server({
     root: './app',
-    hostname: '0.0.0.0',
+    hostname: 'localhost',
     port: 8000,
     livereload: true,
     middleware: function(connect, opt) {
