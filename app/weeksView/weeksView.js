@@ -14,7 +14,7 @@ angular.module('myApp.weeksView', ['ngRoute', 'pnpServices'])
   $scope.weeks = Week.find();
 
   $scope.createNewWeek = function() {
-    (Week.createNewWeek({msg: 'any-message'}))
+    (Week.createNewWeek())
       .$promise
         .then(function(data) {
           console.log('data: ' + data);
