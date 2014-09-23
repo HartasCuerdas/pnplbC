@@ -6,7 +6,7 @@ module.exports = function(grunt) {
           input: '../../node/pnplb/server/server.js',
           output: 'app/pnp-services.js',
           ngModuleName: 'pnpServices',
-          apiUrl: 'http://0.0.0.0:3000/api'
+          apiUrl: 'http://localhost:3000/api'
         }
       }
     },
