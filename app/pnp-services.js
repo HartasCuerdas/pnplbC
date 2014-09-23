@@ -1415,9 +1415,7 @@ module.factory(
          *
          * @description
          *
-         * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
+         * Creates a new Week
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -1426,7 +1424,7 @@ module.factory(
          *
          * @param {Object} postData Request data.
          *
-         *  - `msg` – `{string=}` - 
+         * This method does not accept any data. Supply an empty object.
          *
          * @param {Function(Object, Object)=} successCb
          *   Success callback with two arguments: `value`, `responseHeaders`.
@@ -1440,7 +1438,7 @@ module.factory(
          *
          * Data properties:
          *
-         *  - `weekgreeting` – `{string=}` - 
+         *  - `week` – `{Object=}` - 
          */
         "createNewWeek": {
           url: urlBase + "/Weeks/createNewWeek",
