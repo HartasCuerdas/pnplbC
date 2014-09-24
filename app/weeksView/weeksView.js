@@ -11,7 +11,7 @@ angular.module('myApp.weeksView', ['ngRoute', 'pnpServices'])
 
 .controller('WeeksCtrl', [ '$scope', 'Week', function($scope, Week) {
 
-  $scope.weeks = Week.find();
+  $scope.weeks = Week.find({filter: {order: 'firstDay DESC', fields: {oAvg: false} }});
 
   $scope.createNewWeek = function() {
     (Week.createNewWeek())
